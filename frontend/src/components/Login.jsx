@@ -2,6 +2,11 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+// Create an axios instance with the base URL
+const api = axios.create({
+  baseURL: 'https://backendapi-9196.onrender.com'
+});
+
 function Login() {
   const navigate = useNavigate();
   const [loginInfo, setLoginInfo] = useState({
@@ -20,7 +25,7 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8080/auth/login", {
+      const response = await api.post('/auth/login', {
         email: loginInfo.email,
         password: loginInfo.password
       });

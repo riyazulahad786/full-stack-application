@@ -1,8 +1,14 @@
 import { useState } from "react";
 import axios from 'axios';
-import {useNavigate}  from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
+
+// Create an axios instance with the base URL
+const api = axios.create({
+  baseURL: 'https://backendapi-9196.onrender.com'
+});
+
 function Register() {
-     const navigate = useNavigate();
+  const navigate = useNavigate();
   const [signUpinfo, setSignupinfo] = useState({
     firstName: "",
     lastName: "",
@@ -13,9 +19,10 @@ function Register() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    const copySigninfo = { ...signUpinfo };
-    copySigninfo[name] = value;
-    setSignupinfo(copySigninfo);
+    setSignupinfo((prevInfo) => ({
+      ...prevInfo,
+      [name]: value
+    }));
   };
 
   const handleRegister = async (e) => {
@@ -28,17 +35,17 @@ function Register() {
     }
 
     try {
-      const response = await axios.post("http://localhost:8080/auth/signup", {
+      const response = await api.post("/auth/signup", {
         firstName: signUpinfo.firstName,
         lastName: signUpinfo.lastName,
         email: signUpinfo.email,
         password: signUpinfo.password
       });
       console.log("Registration successful", response.data);
-      navigate('/login')
+      navigate('/login');
     } catch (error) {
       console.error("Registration error", error);
-     
+      alert("Registration failed. Please try again.");
     }
   };
 
@@ -108,7 +115,7 @@ function Register() {
             Already have an account? <a href="/login">Login Here</a>
           </p>
         </div>
-        <div className="d-flex justify-content-center align-items-center">
+        <div className="d-flex justify-content-center align-items-center mt-2">
           <button className="btn btn-primary">Login with Google</button>
         </div>
       </form>
